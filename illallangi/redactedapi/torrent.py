@@ -22,8 +22,8 @@ class Torrent(object):
             'format',
             'media',
             'remasterCatalogueNumber',
+            'encoding',
             'id', # Missing Property
-            'encoding', # Missing Property
             'remastered', # Missing Property
             'remasterYear', # Missing Property
             'remasterTitle', # Missing Property
@@ -75,3 +75,7 @@ class Torrent(object):
     @cached_property
     def remasterCatalogueNumber(self):
         return self._dictionary['remasterCatalogueNumber']
+
+    @cached_property
+    def encoding(self):
+        return self._dictionary['encoding'].replace('Lossless', '').replace('24bit', '24').strip()
