@@ -40,7 +40,7 @@ class API(object):
         group = self.get_group(hash)
         musicInfo = group.musicInfo
         artists = musicInfo.artists
-        if group.releaseType == 3:
+        if group.releaseType == 3 or group.releaseType == 7:
             return f'{group.releaseTypeName} - {group.year} - {group.name} [{torrent.media} {torrent.format}] {{{torrent.remasterCatalogueNumber or group.catalogueNumber}}}/'.replace(' {}','').replace(' []', '')
         else:
             return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{torrent.media} {torrent.format}] {{{torrent.remasterCatalogueNumber}}}/'.replace(' {}', '').replace(' []', '')
