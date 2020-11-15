@@ -30,12 +30,15 @@ class API(object):
 
     def get_index(self):
         result = self.get(self.endpoint / 'ajax.php' % {'action': 'index'})
-        if result is not None:
-            return Index(result)
+        if result is None:
+            return
+        return Index(result)
 
     def rename_torrent_file(self, hash, path):
-        directory = self.get_directory(hash)
-        return sub('^.*?\/+', directory, path)
+        result = self.get_directory(hash)
+        if result is None:
+            return
+        return sub('^.*?\/+', result, path)
 
     def get_directory(self, hash):
         torrent = self.get_torrent(hash)
@@ -51,13 +54,15 @@ class API(object):
 
     def get_torrent(self, hash):
         result = self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
-        if result is not None:
-            return Torrent(result['torrent'])
+        if result is None:
+            return
+        return Torrent(result['torrent'])
 
     def get_group(self, hash):
         result = self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
-        if result is not None:
-            return Group(result['group'])
+        if result is None:
+            return
+        return Group(result['group'])
 
     def get(self, url):
         with Cache(self.config_path) as cache:
