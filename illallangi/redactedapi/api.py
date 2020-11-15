@@ -16,7 +16,8 @@ from .torrent import Torrent
 from .group import Group
 
 ENDPOINTDEF = 'https://redacted.ch/'
-EXPIRE = 7 * 24 * 60 * 60
+SUCCESS_EXPIRY = 7 * 24 * 60 * 60
+FAILURE_EXPIRY = 60
 
 
 class API(object):
@@ -79,9 +80,11 @@ class API(object):
                     r.raise_for_status()
                 except HTTPError as http_err:
                     logger.error(f'HTTP error occurred: {http_err}')
+                    cache.set(url, None, expire=FAILURE_EXPIRY)
                     return
                 except Exception as err:
                     logger.error(f'Other error occurred: {err}')
+                    cache.set(url, None, expire=FAILURE_EXPIRY)
                     return
                 logger.debug('Received {0} bytes from API'.format(len(r.content)))
 
@@ -92,7 +95,7 @@ class API(object):
                 cache.set(
                     url,
                     r.json()['response'],
-                    expire=EXPIRE)
+                    expire=SUCCESS_EXPIRY)
             return cache[url]
 
     @property
