@@ -29,7 +29,9 @@ class API(object):
         self.bucket = TokenBucket(10, 5 / 10)
 
     def get_index(self):
-        return Index(self.get(self.endpoint / 'ajax.php' % {'action': 'index'}))
+        result = self.get(self.endpoint / 'ajax.php' % {'action': 'index'})
+        if result is not None:
+            return Index(result)
 
     def rename_torrent_file(self, hash, path):
         directory = self.get_directory(hash)
@@ -38,6 +40,8 @@ class API(object):
     def get_directory(self, hash):
         torrent = self.get_torrent(hash)
         group = self.get_group(hash)
+        if torrent is None or group is None:
+            return
         musicInfo = group.musicInfo
         artists = musicInfo.artists
         if group.releaseType == 3 or group.releaseType == 7:
@@ -46,10 +50,14 @@ class API(object):
             return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}] {{{torrent.remasterCatalogueNumber}}}'.replace(' {}', '').replace(' []', '').replace('/','-') + '/'
 
     def get_torrent(self, hash):
-        return Torrent(self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})['torrent'])
+        result = self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
+        if result is not None:
+            return Torrent(result['torrent'])
 
     def get_group(self, hash):
-        return Group(self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})['group'])
+        result = self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
+        if result is not None:
+            return Group(result['group'])
 
     def get(self, url):
         with Cache(self.config_path) as cache:
