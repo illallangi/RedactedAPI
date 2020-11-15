@@ -41,9 +41,9 @@ class API(object):
         musicInfo = group.musicInfo
         artists = musicInfo.artists
         if group.releaseType == 3 or group.releaseType == 7:
-            return f'{group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}] {{{torrent.remasterCatalogueNumber or group.catalogueNumber}}}/'.replace(' {}','').replace(' []', '')
+            return f'{group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}] {{{torrent.remasterCatalogueNumber or group.catalogueNumber}}}'.replace(' {}','').replace(' []', '').replace('/','-') + '/'
         else:
-            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}] {{{torrent.remasterCatalogueNumber}}}/'.replace(' {}', '').replace(' []', '')
+            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}] {{{torrent.remasterCatalogueNumber}}}'.replace(' {}', '').replace(' []', '').replace('/','-') + '/'
 
     def get_torrent(self, hash):
         return Torrent(self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})['torrent'])
