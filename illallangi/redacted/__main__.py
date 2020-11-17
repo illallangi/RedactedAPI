@@ -41,6 +41,7 @@ def cli(log_level, slack_webhook, slack_username, slack_format):
 
 @cli.command(name='get-index')
 @option('--api-key',
+        '--redacted-api-key',
         type=STRING,
         required=True)
 @option('--endpoint',
@@ -54,6 +55,7 @@ def get_index(api_key, endpoint, cache):
 
 @cli.command(name='get-torrent')
 @option('--api-key',
+        '--redacted-api-key',
         type=STRING,
         required=True)
 @option('--endpoint',
@@ -70,6 +72,7 @@ def get_torrent(api_key, endpoint, hash, cache):
 
 @cli.command(name='get-group')
 @option('--api-key',
+        '--redacted-api-key',
         type=STRING,
         required=True)
 @option('--endpoint',
@@ -86,6 +89,7 @@ def get_group(api_key, endpoint, hash, cache):
 
 @cli.command(name='get-directory')
 @option('--api-key',
+        '--redacted-api-key',
         type=STRING,
         required=True)
 @option('--endpoint',
@@ -102,6 +106,7 @@ def get_directory(api_key, endpoint, cache, hash):
 
 @cli.command(name='rename-torrent-file')
 @option('--api-key',
+        '--redacted-api-key',
         type=STRING,
         required=True)
 @option('--endpoint',
