@@ -21,7 +21,7 @@ class Group(object):
         return [
             'name',
             'catalogueNumber',
-            'releaseType',     
+            'releaseType',
             'year',
             'musicInfo',
             'wikiBody',  # TODO: Create Property

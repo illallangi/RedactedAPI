@@ -2,11 +2,11 @@ from sys import stderr
 
 from click import Choice as CHOICE, STRING, argument, group, option
 
+from illallangi.redactedapi import API as RED_API, ENDPOINTDEF as RED_ENDPOINTDEF
+
 from loguru import logger
 
 from notifiers.logging import NotificationHandler
-
-from illallangi.redactedapi import API as RED_API, ENDPOINTDEF as RED_ENDPOINTDEF
 
 
 @group()
