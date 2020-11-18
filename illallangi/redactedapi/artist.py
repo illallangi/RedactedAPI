@@ -2,6 +2,7 @@ from functools import cached_property
 
 from loguru import logger
 
+
 class Artist(object):
     def __init__(self, dictionary, *args, **kwargs):
         super().__init__(*args, **kwargs)

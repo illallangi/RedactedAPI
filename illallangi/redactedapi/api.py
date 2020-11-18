@@ -1,25 +1,23 @@
+from json import dump
 from os.path import exists, join
+from re import sub
 
 from click import get_app_dir
 
 from diskcache import Cache
 
-from json import dump
-
 from jsonpatch import JsonPatch
 
 from loguru import logger
 
-from re import sub
-
-from requests import get as http_get, HTTPError
+from requests import HTTPError, get as http_get
 
 from yarl import URL
 
-from .tokenbucket import TokenBucket
-from .index import Index
-from .torrent import Torrent
 from .group import Group
+from .index import Index
+from .tokenbucket import TokenBucket
+from .torrent import Torrent
 
 ENDPOINTDEF = 'https://redacted.ch/'
 SUCCESS_EXPIRY = 7 * 24 * 60 * 60
@@ -45,7 +43,7 @@ class API(object):
         result = self.get_directory(hash)
         if result is None:
             return
-        return sub('^.*?\/+', result, path)
+        return sub('^.*?/+', result, path)
 
     def get_directory(self, hash):
         torrent = self.get_torrent(hash)
@@ -55,7 +53,7 @@ class API(object):
         musicInfo = group.musicInfo
         artists = musicInfo.artists
         release = ''
-        
+
         if group.catalogueNumber:
             release = f' {{{group.catalogueNumber}}}'
         if torrent.remasterCatalogueNumber:
@@ -64,9 +62,9 @@ class API(object):
             release = f' {{{torrent.mb_albumid}}}'
 
         if group.releaseType == 3 or group.releaseType == 7:
-            return f'{group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/','-') + '/'
+            return f'{group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/', '-') + '/'
         else:
-            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/','-') + '/'
+            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/', '-') + '/'
 
     def get_torrent(self, hash):
         result = self._patched_torrent(hash)
@@ -80,7 +78,7 @@ class API(object):
             return
         return Group(result['group'])
 
-    def _patched_torrent(self, hash, patch_path = None):
+    def _patched_torrent(self, hash, patch_path=None):
         if patch_path is None:
             patch_path = join(self.config_path, f'{hash}.json-patch')
         result = self._get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})

@@ -61,4 +61,3 @@ class MusicInfo(object):
     @cached_property
     def producers(self):
         return ArtistCollection(self._dictionary['producer'])
-

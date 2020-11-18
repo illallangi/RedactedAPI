@@ -24,19 +24,19 @@ class Group(object):
             'releaseType',     
             'year',
             'musicInfo',
-            'wikiBody', # Missing Property
-            'bbBody', # Missing Property
-            'wikiImage', # Missing Property
-            'id', # Missing Property
-            'recordLabel', # Missing Property
-            'categoryId', # Missing Property
-            'categoryName', # Missing Property
-            'time', # Missing Property
-            'vanityHouse', # Missing Property
-            'isBookmarked', # Missing Property
-            'tags', # Missing Property
-            'collages', # Missing Property
-            'personalCollages', # Missing Property
+            'wikiBody',  # TODO: Create Property
+            'bbBody',  # TODO: Create Property
+            'wikiImage',  # TODO: Create Property
+            'id',  # TODO: Create Property
+            'recordLabel',  # TODO: Create Property
+            'categoryId',  # TODO: Create Property
+            'categoryName',  # TODO: Create Property
+            'time',  # TODO: Create Property
+            'vanityHouse',  # TODO: Create Property
+            'isBookmarked',  # TODO: Create Property
+            'tags',  # TODO: Create Property
+            'collages',  # TODO: Create Property
+            'personalCollages',  # TODO: Create Property
         ]
 
     def __repr__(self):
