@@ -4,6 +4,8 @@ from click import get_app_dir
 
 from diskcache import Cache
 
+from json import dump
+
 from jsonpatch import JsonPatch
 
 from loguru import logger
@@ -83,9 +85,10 @@ class API(object):
             patch_path = join(self.config_path, f'{hash}.json-patch')
         result = self._get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
         if not exists(patch_path):
-            logger.debug(f'{patch_path} does not exist, not applying')
-            return result
-        logger.debug(f'Applying json patch {patch_path}')
+            logger.debug(f'{patch_path} does not exist, creating empty patch')
+            with open(patch_path, 'w') as patch_file:
+                dump([], patch_file)
+        logger.trace(f'Applying json patch {patch_path}')
         with open(patch_path, 'r') as patch_file:
             patch = JsonPatch.from_string(patch_file.read())
             result = patch.apply(result)
