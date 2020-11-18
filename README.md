@@ -3,12 +3,31 @@
 [![Image Size](https://images.microbadger.com/badges/image/illallangi/redactedapi.svg)](https://microbadger.com/images/illallangi/redactedapi)
 ![Build](https://github.com/illallangi/RedactedAPI/workflows/Build/badge.svg)
 
-Python bindings for the [Redacted](https://redacted.ch/) [API](https://redacted.ch/wiki.php?action=article&id=455)
+Tool and Python bindings for the [Redacted](https://redacted.ch/) [API](https://redacted.ch/wiki.php?action=article&id=455)
 
 ## Installation
 
-TODO: DOCUMENT INSTALLATION
+```shell
+pip install git+git://github.com/illallangi/RedactedAPI.git
+```
 
 ## Usage
 
-TODO: DOCUMENT USAGE
+```shell
+$ redacted-tool
+Usage: redacted-tool [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --log-level [CRITICAL|ERROR|WARNING|INFO|DEBUG|SUCCESS|TRACE]
+  --slack-webhook TEXT
+  --slack-username TEXT
+  --slack-format TEXT
+  --help                          Show this message and exit.
+
+Commands:
+  get-directory
+  get-group
+  get-index
+  get-torrent
+  rename-torrent-file
+```
