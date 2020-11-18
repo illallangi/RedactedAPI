@@ -1,6 +1,10 @@
+from os.path import exists, join
+
 from click import get_app_dir
 
 from diskcache import Cache
+
+from jsonpatch import JsonPatch
 
 from loguru import logger
 
@@ -30,7 +34,7 @@ class API(object):
         self.bucket = TokenBucket(10, 5 / 10)
 
     def get_index(self):
-        result = self.get(self.endpoint / 'ajax.php' % {'action': 'index'})
+        result = self._get(self.endpoint / 'ajax.php' % {'action': 'index'})
         if result is None:
             return
         return Index(result)
@@ -48,24 +52,46 @@ class API(object):
             return
         musicInfo = group.musicInfo
         artists = musicInfo.artists
+        release = ''
+        
+        if group.catalogueNumber:
+            release = f' {{{group.catalogueNumber}}}'
+        if torrent.remasterCatalogueNumber:
+            release = f' {{{torrent.remasterCatalogueNumber}}}'
+        if torrent.mb_albumid:
+            release = f' {{{torrent.mb_albumid}}}'
+
         if group.releaseType == 3 or group.releaseType == 7:
-            return f'{group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}] {{{torrent.remasterCatalogueNumber or group.catalogueNumber}}}'.replace(' {}','').replace(' []', '').replace('/','-') + '/'
+            return f'{group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/','-') + '/'
         else:
-            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}] {{{torrent.remasterCatalogueNumber}}}'.replace(' {}', '').replace(' []', '').replace('/','-') + '/'
+            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/','-') + '/'
 
     def get_torrent(self, hash):
-        result = self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
+        result = self._patched_torrent(hash)
         if result is None:
             return
         return Torrent(result['torrent'])
 
     def get_group(self, hash):
-        result = self.get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
+        result = self._patched_torrent(hash)
         if result is None:
             return
         return Group(result['group'])
 
-    def get(self, url):
+    def _patched_torrent(self, hash, patch_path = None):
+        if patch_path is None:
+            patch_path = join(self.config_path, f'{hash}.json-patch')
+        result = self._get(self.endpoint / 'ajax.php' % {'action': 'torrent', 'hash': hash.upper()})
+        if not exists(patch_path):
+            logger.debug(f'{patch_path} does not exist, not applying')
+            return result
+        logger.debug(f'Applying json patch {patch_path}')
+        with open(patch_path, 'r') as patch_file:
+            patch = JsonPatch.from_string(patch_file.read())
+            result = patch.apply(result)
+        return result
+
+    def _get(self, url):
         with Cache(self.config_path) as cache:
             if not self.cache or url not in cache:
                 self.bucket.consume()

@@ -23,6 +23,7 @@ class Torrent(object):
             'media',
             'remasterCatalogueNumber',
             'encoding',
+            'mb_albumid',
             'id', # Missing Property
             'remastered', # Missing Property
             'remasterYear', # Missing Property
@@ -71,6 +72,10 @@ class Torrent(object):
     @cached_property
     def media(self):
         return self._dictionary['media']
+
+    @cached_property
+    def mb_albumid(self):
+        return self._dictionary.get('mb_albumid',None)
 
     @cached_property
     def remasterCatalogueNumber(self):
