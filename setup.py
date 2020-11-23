@@ -20,9 +20,12 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     entry_points={
-        'console_scripts': ['redacted-tool=illallangi.redacted:__main__.cli'],
+        'console_scripts': [
+            'redacted-tool=illallangi.redacted:__main__.cli'
+        ],
     },
     install_requires=[
+        'bytesize',
         'click',
         'diskcache',
         'jsonpatch',

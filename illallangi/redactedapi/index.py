@@ -21,6 +21,9 @@ class Index(object):
         return [
             'username',
             'userstats',
+            'id',
+            'authkey',
+            'passkey',
         ]
 
     def __repr__(self):
@@ -30,9 +33,21 @@ class Index(object):
         return f'{self.username} ({self.userstats.userclass})'
 
     @cached_property
+    def id(self):
+        return int(self._dictionary['id'])
+
+    @cached_property
     def username(self):
-        return self._dictionary['username']
+        return str(self._dictionary['username'])
 
     @cached_property
     def userstats(self):
         return UserStats(self._dictionary['userstats'])
+
+    @cached_property
+    def authkey(self):
+        return str(self._dictionary['authkey'])
+
+    @cached_property
+    def passkey(self):
+        return str(self._dictionary['passkey'])
