@@ -20,17 +20,28 @@ from .tokenbucket import TokenBucket
 from .torrent import Torrent
 
 ENDPOINTDEF = 'https://redacted.ch/'
-SUCCESS_EXPIRY = 7 * 24 * 60 * 60
-FAILURE_EXPIRY = 60
+SUCCESS_EXPIRYDEF = 7 * 24 * 60 * 60
+FAILURE_EXPIRYDEF = 60
 
 
 class API(object):
-    def __init__(self, api_key, endpoint=ENDPOINTDEF, cache=True, config_path=None, *args, **kwargs):
+    def __init__(
+            self,
+            api_key,
+            endpoint=ENDPOINTDEF,
+            cache=True,
+            config_path=None,
+            success_expiry=SUCCESS_EXPIRYDEF,
+            failure_expiry=FAILURE_EXPIRYDEF,
+            *args,
+            **kwargs):
         super().__init__(*args, **kwargs)
         self.api_key = api_key
         self.endpoint = URL(endpoint) if not isinstance(endpoint, URL) else endpoint
         self.cache = cache
         self.config_path = get_app_dir(__package__) if not config_path else config_path
+        self.success_expiry = success_expiry
+        self.failure_expiry = failure_expiry
         self.bucket = TokenBucket(10, 5 / 10)
 
     def get_index(self):
@@ -107,11 +118,11 @@ class API(object):
                     r.raise_for_status()
                 except HTTPError as http_err:
                     logger.error(f'HTTP error occurred: {http_err}')
-                    cache.set(url, None, expire=FAILURE_EXPIRY)
+                    cache.set(url, None, expire=self.failure_expiry)
                     return
                 except Exception as err:
                     logger.error(f'Other error occurred: {err}')
-                    cache.set(url, None, expire=FAILURE_EXPIRY)
+                    cache.set(url, None, expire=self.failure_expiry)
                     return
                 logger.debug('Received {0} bytes from API'.format(len(r.content)))
 
@@ -122,7 +133,7 @@ class API(object):
                 cache.set(
                     url,
                     r.json()['response'],
-                    expire=SUCCESS_EXPIRY)
+                    expire=self.success_expiry)
             return cache[url]
 
     @property
