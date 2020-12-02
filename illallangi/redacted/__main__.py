@@ -1,3 +1,4 @@
+from json import dumps
 from sys import stderr
 
 from click import Choice as CHOICE, STRING, argument, group, option
@@ -51,7 +52,9 @@ def cli(log_level, slack_webhook, slack_username, slack_format):
         default=RED_ENDPOINTDEF)
 @option('--cache/--no-cache', default=True)
 def get_index(api_key, endpoint, cache):
-    logger.info(RED_API(api_key, endpoint, cache).get_index())
+    obj = RED_API(api_key, endpoint, cache).get_index()
+    logger.info(obj)
+    logger.trace(dumps(obj, default=lambda x: x.__dict__))
 
 
 @cli.command(name='get-torrent')
@@ -69,7 +72,9 @@ def get_index(api_key, endpoint, cache):
           type=STRING,
           required=True)
 def get_torrent(api_key, endpoint, hash, cache):
-    logger.info(RED_API(api_key, endpoint, cache).get_torrent(hash))
+    obj = RED_API(api_key, endpoint, cache).get_torrent(hash)
+    logger.info(obj)
+    logger.trace(dumps(obj, default=lambda x: x.__dict__))
 
 
 @cli.command(name='get-group')
@@ -87,7 +92,9 @@ def get_torrent(api_key, endpoint, hash, cache):
           type=STRING,
           required=True)
 def get_group(api_key, endpoint, hash, cache):
-    logger.info(RED_API(api_key, endpoint, cache).get_group(hash))
+    obj = RED_API(api_key, endpoint, cache).get_group(hash)
+    logger.info(obj)
+    logger.trace(dumps(obj, default=lambda x: x.__dict__))
 
 
 @cli.command(name='get-directory')
@@ -105,7 +112,9 @@ def get_group(api_key, endpoint, hash, cache):
           type=STRING,
           required=True)
 def get_directory(api_key, endpoint, cache, hash):
-    logger.info(RED_API(api_key, endpoint, cache).get_directory(hash))
+    obj = RED_API(api_key, endpoint, cache).get_directory(hash)
+    logger.info(obj)
+    logger.trace(dumps(obj, default=lambda x: x.__dict__))
 
 
 @cli.command(name='rename-torrent-file')
@@ -126,7 +135,9 @@ def get_directory(api_key, endpoint, cache, hash):
           type=STRING,
           required=True)
 def rename_torrent_file(api_key, endpoint, cache, hash, path):
-    logger.info(RED_API(api_key, endpoint, cache).rename_torrent_file(hash, path))
+    obj = RED_API(api_key, endpoint, cache).rename_torrent_file(hash, path)
+    logger.info(obj)
+    logger.trace(dumps(obj, default=lambda x: x.__dict__))
 
 
 if __name__ == "__main__":
