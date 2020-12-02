@@ -63,8 +63,14 @@ class API(object):
             return
         musicInfo = group.musicInfo
         artists = musicInfo.artists
-        release = ''
+        
+        remaster = ''
+        if torrent.remasterTitle:
+            remaster = f' ({torrent.remasterTitle})'
 
+        format = f' [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]'
+        
+        release = ''
         if group.catalogueNumber:
             release = f' {{{group.catalogueNumber}}}'
         if torrent.remasterCatalogueNumber:
@@ -73,9 +79,9 @@ class API(object):
             release = f' {{{torrent.mb_albumid}}}'
 
         if group.releaseType == 3 or group.releaseType == 7:
-            return f'{group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/', '-') + '/'
+            return f'{group.releaseTypeName} - {group.year} - {group.name}{remaster}{format}{release}'.replace(' []', '').replace('/', '-') + '/'
         else:
-            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name} [{" ".join([torrent.media, torrent.format, torrent.encoding]).strip()}]{release}'.replace(' []', '').replace('/', '-') + '/'
+            return f'{artists[0].name} - {group.releaseTypeName} - {group.year} - {group.name}{remaster}{format}{release}'.replace(' []', '').replace('/', '-') + '/'
 
     def get_torrent(self, hash):
         result = self._patched_torrent(hash)
