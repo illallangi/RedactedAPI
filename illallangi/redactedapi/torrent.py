@@ -27,7 +27,7 @@ class Torrent(object):
             'id',  # TODO: Create Property
             'remastered',  # TODO: Create Property
             'remasterYear',  # TODO: Create Property
-            'remasterTitle',  # TODO: Create Property
+            'remasterTitle',
             'remasterRecordLabel',  # TODO: Create Property
             'scene',  # TODO: Create Property
             'hasLog',  # TODO: Create Property
@@ -76,6 +76,10 @@ class Torrent(object):
     @cached_property
     def mb_albumid(self):
         return self._dictionary.get('mb_albumid', None)
+
+    @cached_property
+    def remasterTitle(self):
+        return self._dictionary['remasterTitle']
 
     @cached_property
     def remasterCatalogueNumber(self):
